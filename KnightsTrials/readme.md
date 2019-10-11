@@ -1,0 +1,1 @@
+A mod for Hollow Knight with the goal to add random objectives to complete the game.
