@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using GlobalEnums;
 using Modding;
@@ -11,9 +11,6 @@ namespace KnightsTrials
     /// <remarks>This configuration has settings that are save specific</remarks>
     public class KnightsTrials : Mod
     {
-        private int _hitCounter;
-
-        private int _tempNailDamage;
 
         /// <summary>
         /// Represents this Mod's instance.
@@ -35,52 +32,20 @@ namespace KnightsTrials
             Instance = this;
 
             Log("Initializing");
-            
-            //Here we are hooking into the AttackHook so we can modify the damage for the attack.
-            ModHooks.Instance.AttackHook += OnAttack;
 
-            //Here want to hook into the AfterAttackHook to do something at the end of the attack animation.
-            ModHooks.Instance.AfterAttackHook += OnAfterAttack;
+            On.GameManager.BeginSceneTransition += EditTransition;
             Log("Initialized");
         }
 
-        /// <summary>
-        /// Calculates Crits on attack
-        /// </summary>
-        /// <remarks>
-        /// This checks if this is our 4th attack or not.  If it is, we're going to critical hit by doubling our nail damage for the attack.  We also store the previous nail damage so that we can revert it back after the attack is over.
-        /// </remarks>
-        /// <param name="dir"></param>
-        public void OnAttack(AttackDirection dir)
+        private static void EditTransition(On.GameManager.orig_BeginSceneTransition orig, GameManager self, GameManager.SceneLoadInfo info)
         {
-            LogDebug("Attacking");
-            if (_hitCounter >= 4)
+            if (info.SceneName == "Room_Final_Boss_Core")
             {
-                LogDebug("Critical hit!");
-
-                _tempNailDamage = PlayerData.instance.nailDamage; //Store the current nail damage.
-
-                LogDebug("Set _tempNailDamage to " + _tempNailDamage);
-
-                PlayerData.instance.nailDamage *= 2; //Double the nail damage
-
-                _hitCounter = 0;// reset our hit counter
-
-                return;
+                info.SceneName = "Room_Final_Boss_Atrium";
             }
-            _hitCounter++; //Increase the hit counter
+            orig(self, info);
         }
 
-        /// <summary>
-        /// Reverts damage
-        /// </summary>
-        /// <remarks>After the attack is over, we need to reset the nail damage back to what it was.</remarks>
-        /// <param name="dir"></param>
-        private void OnAfterAttack(AttackDirection dir)
-        {
-            LogDebug("Attacked!");
-            PlayerData.instance.nailDamage = _tempNailDamage; //Attacking is done, we need to set the nail damage back to what it was before we crit.
-        }
     }
 
 }
