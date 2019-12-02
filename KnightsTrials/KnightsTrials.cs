@@ -1,34 +1,19 @@
-using System;
+﻿using System;
 using System.Reflection;
 using GlobalEnums;
 using Modding;
 
 namespace KnightsTrials
 {
-    /// <summary>
-    /// The main mod class
-    /// </summary>
-    /// <remarks>This configuration has settings that are save specific</remarks>
     public class KnightsTrials : Mod
     {
 
-        /// <summary>
-        /// Represents this Mod's instance.
-        /// </summary>
         internal static KnightsTrials Instance;
 
-        /// <summary>
-        /// Fetches the Mod Version From AssemblyInfo.AssemblyVersion
-        /// </summary>
-        /// <returns>Mod's Version</returns>
         public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         
-        /// <summary>
-        /// Called after the class has been constructed.
-        /// </summary>
         public override void Initialize()
         {
-            //Assign the Instance to the instantiated mod.
             Instance = this;
 
             Log("Initializing");
